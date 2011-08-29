@@ -1,0 +1,11 @@
+# Ignore Vim swap files
+*.swp
+
+# Ignore Python bytecode
+*.pyc
+
+# Ignore Mac OS X
+.DS_Store
+
+# Ignore virtualenv
+env
