@@ -9,3 +9,6 @@
 
 # Ignore virtualenv
 env
+
+# Ignore uploads (for testing)
+uploads
