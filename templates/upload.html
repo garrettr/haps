@@ -1,5 +1,10 @@
+{% block extrahead %}
+<script src="/static/pad.js" type="text/javascript></script>
+{% endblock %}
 {% block body %}
+<noscript>Enable Javascript for enhanced security.</noscript>
 <form enctype="multipart/form-data" method="POST">
+  <input type="hidden" name="padding" id="padding" />
   Choose a file to upload: <input name="file" type="file" /><br />
   <input type="submit" value="Upload File" />
 </form>
