@@ -30,6 +30,11 @@ def upload():
 def upload_thanks(filename=None):
     return render_template('upload_thanks.html')
 
+from flask import send_from_directory
+@app.route('uploads/file/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     error = None
