@@ -12,7 +12,7 @@ function add_padding() {
     var size_so_far = 0;
     var interval = setInterval(function() {
         for(var i=0; i<10000; i++) {
-            pad_list.append('A');
+            pad_list.push('A');
             size_so_far++;
             if(size_so_far == padding_size) {
                 clearInterval(interval);
