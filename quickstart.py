@@ -14,6 +14,15 @@ def allowed_file(filename):
     return '.' in filename and \
             filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
+def get_client_ip(request):
+    ip = None
+    x_forwarded_for = request.environ.get('X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.environ.get('REMOTE_ADDR')
+    return ip
+
 @app.route('/upload/', methods=['POST', 'GET'])
 def upload():
     error = None
@@ -24,14 +33,15 @@ def upload():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('upload_thanks'))
     else:
-        return render_template('upload.html')
+        client_ip = get_client_ip(request)
+        return render_template('upload.html', client_ip=client_ip)
 
 @app.route('/upload/thanks')
 def upload_thanks(filename=None):
     return render_template('upload_thanks.html')
 
 from flask import send_from_directory
-@app.route('uploads/file/<filename>')
+@app.route('/uploads/file/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
