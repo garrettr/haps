@@ -5,14 +5,20 @@
 
 {% block body %}
 <noscript>Enable Javascript for enhanced security.</noscript>
-<div id="notes"></div>
-<div id="tor-check"></div>
+
+{% if is_using_tor %}
+<p>Congratulations! You're using Tor</p>
+{% else %}
+<p>You're not using Tor. This could be dangerous.</p>
+{% endif %}
 
 {% if client_ip %}
 <p>Your IP address appears to be: <strong>{{ client_ip }}</strong></p>
 {% else %}
 <p>We messed up our server configuration.</p>
 {% endif %}
+
+<div id="notes"></div>
 
 <form enctype="multipart/form-data" method="POST">
   <input type="hidden" name="padding" id="padding" />
