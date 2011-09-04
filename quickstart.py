@@ -20,7 +20,7 @@ def allowed_file(filename):
 
 def get_client_ip(request):
     ip = None
-    print request.environ
+    # print request.environ
     x_forwarded_for = request.environ.get('X_FORWARDED_FOR')
     if x_forwarded_for:
         ip = x_forwarded_for.split(',')[0]
