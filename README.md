@@ -1,13 +1,7 @@
 # Notes
 
-Bug noticed in Chrome on upload page.
-
-1.  If javascript padding is enabled, the page becomes unresponsive on
-    hitting upload and eventully the browser asks to kill it. Note that
-    the file is successfully uploaded despite the browser crash.
-2.  If javascript padding is disabled, this does not occur.
-
-Firefox doesn't crash with padding enabled. 
+I implemented a Tor check on the upload page, but cannot test it while the server is running on
+localhost. I'm not sure if there exists a way for me to test it until it's running on a proper server.
 
 # Quickstart
 
