@@ -6,6 +6,18 @@ from werkzeug import secure_filename
 import DNS
 DNS.DiscoverNameServers()
 
+# for beanstalk file queue
+import beanstalkc
+import random
+import pickle
+from datetime import datetime, timedelta
+
+# To bring everything up:
+# 1. Run beanstalk on localhost at port 11300
+# 2. Run daemon process (bs-worker.py) to send files
+# 3. Run quickstart.py
+# 4. Upload some files
+
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)),
     'uploads')
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
@@ -69,6 +81,20 @@ def tor_check(clientIp, ELPort):
         # if we're here, that's a positive exit answer
         return 0
 
+def total_seconds(td):
+    """
+    Returns # of seconds contained in timedelta
+    Available in >= Python 2.7 as timedelta.total_seconds()
+    """
+    return (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
+
+def generate_random_time(start, max_delta):
+    """
+    Given a datetime and a max_delta, return a random time between them
+    Granularity at seconds
+    """
+    r_secs = random.randint(0, total_seconds(max_delta))
+    return start + timedelta(seconds=r_secs)
 
 @app.route('/upload/', methods=['POST', 'GET'])
 def upload():
@@ -78,6 +104,16 @@ def upload():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            # put in the queue
+            # connect to beanstalk - running on localhost at 11300, defaults
+            beanstalk = beanstalkc.Connection(host='localhost', port=11300)
+            now = datetime.now()
+            file_dict = {
+                    'filename': filename,
+                    'send_time': generate_random_time(now,
+                        timedelta(seconds=5))   # 5 secs. just for testing
+                }
+            beanstalk.put(pickle.dumps(file_dict))
             return redirect(url_for('upload_thanks'))
     else:
         client_ip = get_client_ip(request)
